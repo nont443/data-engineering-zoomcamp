@@ -3,19 +3,19 @@ sources:
     description: Raw taxi trip data from NYC TLC
     database: |
       {%- if target.type == 'bigquery' -%}
-        {{ env_var('GCP_PROJECT_ID', 'please-add-your-gcp-project-id-here') }}
+        {{ env_var('GCP_PROJECT_ID', 'zoomcamp-486023') }}
       {%- else -%}
         taxi_rides_ny
       {%- endif -%}
     schema: |
       {%- if target.type == 'bigquery' -%}
-        nytaxi
+        zoomcamp
       {%- else -%}
         prod
       {%- endif -%}
     freshness:
-      warn_after: {count: 24, period: hour}
-      error_after: {count: 48, period: hour}
+      warn_after: { count: 24, period: hour }
+      error_after: { count: 48, period: hour }
     tables:
       - name: green_tripdata
         description: Raw green taxi trip records
