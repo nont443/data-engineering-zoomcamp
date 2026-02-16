@@ -13,9 +13,10 @@ sources:
       {%- else -%}
         prod
       {%- endif -%}
-    freshness:
-      warn_after: { count: 24, period: hour }
-      error_after: { count: 48, period: hour }
+    config:
+      freshness:
+        warn_after: { count: 24, period: hour }
+        error_after: { count: 48, period: hour }
     tables:
       - name: green_tripdata
         description: Raw green taxi trip records
@@ -103,4 +104,4 @@ sources:
       - name: fhv_tripdata
         description: Raw FHV taxi trip records
         config:
-          loaded_at_field: pickup_datetime            
+          loaded_at_field: pickup_datetime
