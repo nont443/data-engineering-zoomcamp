@@ -104,4 +104,4 @@ sources:
       - name: fhv_tripdata
         description: Raw FHV taxi trip records
         config:
-          loaded_at_field: pickup_datetime            
+          loaded_at_field: pickup_datetime
