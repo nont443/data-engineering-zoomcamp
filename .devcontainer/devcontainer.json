@@ -1,0 +1,23 @@
+{
+  "name": "de zoomcamp",
+  "build": {
+    "dockerfile": "../Dockerfile",
+    "context": ".."
+  },
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-toolsai.jupyter",
+        "ms-python.vscode-pylance"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "jupyter.notebookFileRoot": "/workspaces/${localWorkspaceFolderBasename}"
+      }
+    }
+  },
+  "forwardPorts": [8888],
+  "postCreateCommand": "python -m ipykernel install --user --name de-zoomcamp --display-name 'Python (de-zoomcamp)'"
+}
