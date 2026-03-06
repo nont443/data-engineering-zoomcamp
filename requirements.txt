@@ -1,0 +1,9 @@
+pandas==2.2.2
+numpy==1.26.4
+scikit-learn==1.5.1
+pyarrow==17.0.0
+pyspark==3.5.1
+jupyterlab==4.2.5
+ipykernel==6.29.5
+google-cloud-storage
+gcsfs
