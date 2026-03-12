@@ -4,7 +4,14 @@
     "dockerfile": "../Dockerfile",
     "context": ".."
   },
+  "runArgs": [
+    "--network=w7-streaming_default"
+  ],
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "remoteUser": "vscode",
+  "mounts": [
+    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+  ],
   "customizations": {
     "vscode": {
       "extensions": [
@@ -19,5 +26,5 @@
     }
   },
   "forwardPorts": [8888],
-  "postCreateCommand": "python -m ipykernel install --user --name de-zoomcamp --display-name 'Python (de-zoomcamp)'"
+  "postCreateCommand": "git config --global user.name 'Nont' && git config --global user.email 'nontavit@gmail.com' && python -m ipykernel install --user --name de-zoomcamp --display-name 'Python (de-zoomcamp)'"
 }
