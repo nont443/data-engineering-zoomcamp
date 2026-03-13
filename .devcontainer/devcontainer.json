@@ -5,7 +5,7 @@
     "context": ".."
   },
   "runArgs": [
-    "--network=w7-streaming_default"
+    "--network=dev-shared"
   ],
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "remoteUser": "vscode",

@@ -1,6 +1,8 @@
 services:
   kafka:
     image: apache/kafka:3.9.0
+    networks:
+      - dev-shared    
     container_name: local-kafka
     hostname: kafka
     ports:
@@ -29,11 +31,15 @@ services:
 
   postgres:
     image: postgres:18
+    networks:
+      - dev-shared    
     restart: on-failure
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql  
     ports:
       - "5432:5432"
 
@@ -42,6 +48,8 @@ services:
       context: .
       dockerfile: ./Dockerfile.flink
     image: pyflink-workshop
+    networks:
+      - dev-shared    
     pull_policy: never
     expose:
       - "6123"
@@ -59,6 +67,8 @@ services:
 
   taskmanager:
     image: pyflink-workshop
+    networks:
+      - dev-shared    
     pull_policy: never
     expose:
       - "6121"
@@ -78,6 +88,8 @@ services:
         parallelism.default: 3
   redpanda:
     image: redpandadata/redpanda:v25.3.9
+    networks:
+      - dev-shared    
     command:
       - redpanda
       - start
@@ -107,4 +119,8 @@ services:
       - 29092:29092     
        
 volumes:
-  kafka_data:    
+  kafka_data:
+  postgres-data:    
+networks:
+  dev-shared:
+    external: true  

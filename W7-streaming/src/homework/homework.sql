@@ -158,3 +158,91 @@ WHERE gt.pickup_location_id = 74
     PRIMARY KEY (window_start)
 );
 
+CREATE TABLE green_trips (
+    pickup_datetime  	TIMESTAMP,
+    dropoff_datetime 	TIMESTAMP,
+    pickup_location_id 	INTEGER,
+    dropoff_location_id	INTEGER,
+    passenger_count     INTEGER,
+    trip_distance       NUMERIC(10,2),
+    tip_amount          NUMERIC(10,2),
+    total_amount        NUMERIC(10,2)
+);
+
+select * from green_trips;
+
+select count(1) from green_trips;
+
+
+create TABLE homework_session_processed_events_aggregated (
+    window_start TIMESTAMP(3),
+    pulocationid INTEGER,
+    num_trips BIGINT,
+    total_revenue DOUBLE PRECISION,
+    PRIMARY KEY (window_start, pulocationid)
+);
+
+
+
+DROP TABLE IF EXISTS session_data;
+
+CREATE TABLE session_data (
+    window_start TIMESTAMP(3),
+    pulocationid INTEGER,
+    num_trips BIGINT,
+    total_revenue DOUBLE PRECISION,
+    PRIMARY KEY (window_start, pulocationid)
+);
+
+
+INSERT INTO session_data (
+    window_start,
+    pulocationid,
+    num_trips,
+    total_revenue
+)
+WITH ordered AS (
+    SELECT
+        pickup_location_id AS pulocationid,
+        pickup_datetime AS event_timestamp,
+        total_amount,
+        LAG(pickup_datetime) OVER (
+            PARTITION BY pickup_location_id
+            ORDER BY pickup_datetime
+        ) AS prev_ts
+    FROM green_trips
+    WHERE pickup_datetime IS NOT NULL
+      AND pickup_location_id IS NOT NULL
+),
+marked AS (
+    SELECT
+        pulocationid,
+        event_timestamp,
+        total_amount,
+        CASE
+            WHEN prev_ts IS NULL THEN 1
+            WHEN event_timestamp - prev_ts > INTERVAL '5 minutes' THEN 1
+            ELSE 0
+        END AS is_new_session
+    FROM ordered
+),
+sessionized AS (
+    SELECT
+        pulocationid,
+        event_timestamp,
+        total_amount,
+        SUM(is_new_session) OVER (
+            PARTITION BY pulocationid
+            ORDER BY event_timestamp
+            ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+        ) AS session_id
+    FROM marked
+)
+SELECT
+    MIN(event_timestamp) AS window_start,
+    pulocationid,
+    COUNT(*) AS num_trips,
+    SUM(total_amount)::DOUBLE PRECISION AS total_revenue
+FROM sessionized
+GROUP BY pulocationid, session_id
+ORDER BY window_start, pulocationid;
